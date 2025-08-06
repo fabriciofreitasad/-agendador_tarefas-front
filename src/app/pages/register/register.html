@@ -12,28 +12,30 @@
 
     <!-- Conteúdo principal do cartão (formulário) -->
     <mat-card-content>
+      <form [formGroup]="form">
 
-      <!-- Campo de entrada para o nome completo do usuário -->
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Nome Completo</mat-label>
-        <input matInput placeholder="Digite o seu nome completo">
-      </mat-form-field>
+        <!-- Campo de entrada para o nome completo do usuário -->
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Nome Completo</mat-label>
+          <input matInput formControlName="fullName" placeholder="Digite o seu nome completo">
+        </mat-form-field>
 
-      <!-- Campo de entrada para o email do usuário -->
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Email</mat-label>
-        <input matInput placeholder="Digite seu email">
-      </mat-form-field>
+        <!-- Campo de entrada para o email do usuário -->
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" placeholder="Digite seu email">
+        </mat-form-field>
 
-      <!-- Campo de entrada para a senha do usuário -->
-      <input-password-field></input-password-field>
+        <!-- Campo de entrada para a senha do usuário -->
+        <input-password-field [control]="passwordControl"></input-password-field>
 
+      </form>
     </mat-card-content>
 
     <!-- Área de ações do cartão (botões) -->
     <mat-card-actions>
       <!-- Botão de envio do formulário -->
-      <button matButton="filled" class="full-width">Cadastrar</button>
+      <button mat-raised-button class="full-width" (click)="submit()">Cadastrar</button>
     </mat-card-actions>
 
   </mat-card>
