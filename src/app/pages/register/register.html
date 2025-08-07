@@ -35,7 +35,7 @@
     <!-- Área de ações do cartão (botões) -->
     <mat-card-actions>
       <!-- Botão de envio do formulário -->
-      <button mat-raised-button class="full-width" (click)="submit()">Cadastrar</button>
+      <button mat-raised-button class="full-width" [disabled]="form.invalid" (click)="submit()">Cadastrar</button>
     </mat-card-actions>
 
   </mat-card>
