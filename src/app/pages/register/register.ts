@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { PasswordField } from './../../shared/components/password-field/password-field';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-register',
@@ -23,6 +24,7 @@ import { PasswordField } from './../../shared/components/password-field/password
     MatSelectModule,
     PasswordField,
     ReactiveFormsModule,
+    CommonModule,
   ],
   templateUrl: './register.html',
   styleUrl: './register.scss',
