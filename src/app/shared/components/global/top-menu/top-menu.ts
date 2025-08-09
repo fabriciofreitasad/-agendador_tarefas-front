@@ -20,12 +20,12 @@ export class TopMenu implements OnInit, OnDestroy {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    this.rotaAtual = this.router.url;
+    this.rotaAtual = this.router.url
     this.inscricaoRota = this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((evento: NavigationEnd) => {
-        this.rotaAtual = evento.url;
-      });
+        this.rotaAtual = evento.url
+      })
   }
 
   ngOnDestroy(): void {
@@ -33,6 +33,6 @@ export class TopMenu implements OnInit, OnDestroy {
   }
 
   estaNaRotaRegister(): boolean {
-    return this.rotaAtual === '/register'
+    return this.rotaAtual === '/register';
   }
 }
