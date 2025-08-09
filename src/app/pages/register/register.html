@@ -1,0 +1,48 @@
+<!-- Componente de Registro de Usuário -->
+<div class="register-component">
+
+  <!-- Cartão do Angular Material para estrutura visual -->
+  <mat-card>
+
+    <!-- Cabeçalho do cartão com padding -->
+    <mat-card-header class="padding-m">
+      <!-- Título do formulário -->
+      <mat-card-title>Cadastro de Usuário</mat-card-title>
+    </mat-card-header>
+
+    <!-- Conteúdo principal do cartão (formulário) -->
+    <mat-card-content>
+      <form [formGroup]="form">
+
+        <!-- Campo de entrada para o nome completo do usuário -->
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Nome Completo</mat-label>
+          <input matInput formControlName="fullName" placeholder="Digite o seu nome completo">
+          @if (fullNameErros) {
+          <mat-error>{{fullNameErros}}</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Campo de entrada para o email do usuário -->
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" placeholder="Digite seu email">
+          @if (emailErros) {
+          <mat-error>{{emailErros}}</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Campo de entrada para a senha do usuário -->
+        <input-password-field [control]="passwordControl"></input-password-field>
+
+      </form>
+    </mat-card-content>
+
+    <!-- Área de ações do cartão (botões) -->
+    <mat-card-actions>
+      <!-- Botão de envio do formulário -->
+      <button mat-raised-button class="full-width" [disabled]="form.invalid" (click)="submit()">Cadastrar</button>
+    </mat-card-actions>
+
+  </mat-card>
+</div>
