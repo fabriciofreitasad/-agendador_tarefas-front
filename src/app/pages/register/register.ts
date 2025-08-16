@@ -11,7 +11,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { UserService } from './../../services/user.service';
 import { PasswordField } from './../../shared/components/password-field/password-field';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -23,6 +27,7 @@ import { PasswordField } from './../../shared/components/password-field/password
     MatSelectModule,
     PasswordField,
     ReactiveFormsModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './register.html',
   styleUrl: './register.scss',
@@ -30,22 +35,28 @@ import { PasswordField } from './../../shared/components/password-field/password
 })
 export class Register {
   form: FormGroup;
+  isLoading = false;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private userService: UserService,
+    private router: Router
+  ) {
     this.form = this.formBuilder.group({
-      fullName: ['', [Validators.required, Validators.minLength(3)]],
+      nome: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      password: [''],
+      senha: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 
   get passwordControl(): FormControl {
-    return this.form.get('password') as FormControl;
+    return this.form.get('senha') as FormControl;
   }
 
   get fullNameErros(): string | null {
-    const fullNameControl = this.form.get('fullName');
-    if (fullNameControl?.hasError('required')) return 'O nome completo é obrigatório';
+    const fullNameControl = this.form.get('nome');
+    if (fullNameControl?.hasError('required'))
+      return 'O nome completo é obrigatório';
     if (fullNameControl?.hasError('minlength'))
       return 'Cadastre um nome com mais de 3 letras';
     return null;
@@ -53,9 +64,9 @@ export class Register {
 
   get emailErros(): string | null {
     const emailControl = this.form.get('email');
-    if (emailControl?.hasError('required')) return 'O cadastro do email é obrigatório';
-    if (emailControl?.hasError('email'))
-      return 'Este email é inválido';
+    if (emailControl?.hasError('required'))
+      return 'O cadastro do email é obrigatório';
+    if (emailControl?.hasError('email')) return 'Este email é inválido';
     return null;
   }
 
@@ -65,6 +76,20 @@ export class Register {
       return;
     }
 
-    console.log('formulario submetido', this.form.value);
+    const formDate = this.form.value;
+
+    this.isLoading = true;
+
+    this.userService
+      .register(formDate)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (response) => {
+          this.router.navigate(['/login']);
+        },
+        error: (error) => {
+          console.error(`Erro ao registrar usuário`, error);
+        },
+      });
   }
 }
