@@ -11,14 +11,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { UserService } from './../../services/user.service';
+import { UserLoginPayload, UserService } from './../../services/user.service';
 import { PasswordField } from './../../shared/components/password-field/password-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
+import { Auth } from '../../services/auth';
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-login',
   imports: [
     MatCardModule,
     MatButtonModule,
@@ -29,23 +30,23 @@ import { finalize } from 'rxjs';
     ReactiveFormsModule,
     MatProgressSpinnerModule,
   ],
-  templateUrl: './register.html',
-  styleUrl: './register.scss',
+  templateUrl: './login.html',
+  styleUrl: './login.scss',
   encapsulation: ViewEncapsulation.None,
 })
-export class Register {
-  form: FormGroup;
+export class Login {
+  form: FormGroup<{email: FormControl<string>, senha: FormControl<string>}>;
   isLoading = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private auth: Auth
   ) {
     this.form = this.formBuilder.group({
-      nome: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      senha: ['', [Validators.required, Validators.minLength(6)]],
+      email: this.formBuilder.control ('', {validators: [Validators.required, Validators.email], nonNullable: true}),
+      senha: this.formBuilder.control ('', {validators: [Validators.required, Validators.minLength(6)], nonNullable: true}),
     });
   }
 
@@ -53,19 +54,10 @@ export class Register {
     return this.form.get('senha') as FormControl;
   }
 
-  get fullNameErros(): string | null {
-    const fullNameControl = this.form.get('nome');
-    if (fullNameControl?.hasError('required'))
-      return 'O nome completo é obrigatório';
-    if (fullNameControl?.hasError('minlength'))
-      return 'Cadastre um nome com mais de 3 letras';
-    return null;
-  }
-
   get emailErros(): string | null {
     const emailControl = this.form.get('email');
     if (emailControl?.hasError('required'))
-      return 'O cadastro do email é obrigatório';
+      return 'A informação do email é obrigatório';
     if (emailControl?.hasError('email')) return 'Este email é inválido';
     return null;
   }
@@ -76,20 +68,20 @@ export class Register {
       return;
     }
 
-    const formData = this.form.value;
+    const formData = this.form.value as UserLoginPayload;
 
     this.isLoading = true;
 
-    this.userService
-      .register(formData)
-      .pipe(finalize(() => (this.isLoading = false)))
+    this.userService.login(formData)
+      .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (response) => {
-          this.router.navigate(['/login']);
+          this.auth.saveToken(response)
+          this.router.navigate(['/'])
         },
         error: (error) => {
-          console.error(`Erro ao registar usuário`, error);
-        },
-      });
+          console.error(`Erro ao entrar`, error)
+        }
+      })
   }
 }
